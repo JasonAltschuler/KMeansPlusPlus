@@ -39,15 +39,15 @@ public class KMeans {
    private boolean pp;           // true --> KMeans++. false --> basic random sampling
    private double epsilon;       // stops running when improvement in error < epsilon
    private boolean useEpsilon;   // true  --> stop running when marginal improvement in WCSS < epsilon
-   // false --> stop running when 0 improvement
+                                 // false --> stop running when 0 improvement
 
    // calculated from dimension of points[][]
    private int m;                // number of data points   (# of pixels for PhenoRipper)  
    private int n;                // number of dimensions    (# of channels for PhenoRipper)
 
    // output
-   private double[][] centroids; // position vectors of centroids                   --- dimensions(2): (k) by (number of channels)
-   private int[] assignment;     // assigns each point to nearest centroid [0, k-1] --- dimensions(1): (number of pixels)
+   private double[][] centroids; // position vectors of centroids                      dim(2): (k) by (number of channels)
+   private int[] assignment;     // assigns each point to nearest centroid [0, k-1]    dim(1): (number of pixels)
    private double WCSS;          // within-cluster sum-of-squares (measure of fit/error)
 
    
@@ -96,10 +96,10 @@ public class KMeans {
       private final double[][] points;
 
       // optional (default values given)
-      private int iterations 		= 10;
-      private boolean pp 			= true;
-      private double epsilon		= .001;
-      private boolean useEpsilon  = true;
+      private int iterations     = 10;
+      private boolean pp         = true;
+      private double epsilon     = .001;
+      private boolean useEpsilon = true;
 
       /**
        * Sets required parameters.

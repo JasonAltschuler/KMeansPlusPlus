@@ -1,6 +1,7 @@
 /*********************************************************************************
 * Description of KMeans.java
 *********************************************************************************/
+
    PURPOSE: Clusters n-dimensional points via an improved form of K-Means algorithm.
 
    OVERVIEW: Randomly chooses without replacement k (# of clusters) data points to be
@@ -21,10 +22,10 @@ of the distance between that point and the closest centroid.
 Default and suggested values are provided directly below.
 
    REQUIRED PARAMETERS:
-int k                -- number of clusters. Recommended: the fewer the better, as long as the fit is decent.
+int k                -- number of clusters. Recommended: fewer is better, as long as the fit is decent.
                      See: http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
-double[][] points    -- n-dimensional data points. For PhenoRipper, this is
-                     pixels by channels. Entries stores pixel intensity.
+double[][] points    -- n-dimensional data points. For PhenoRipper, this is pixels by channels. 
+                     Entries stores pixel intensity.
     
    OPTIONAL PARAMETERS: default and suggested values
 int iterations       -- Default: 50. Recommended [50, 1000]
@@ -33,7 +34,7 @@ boolean pp           -- Default: true. Recommended: true. Plus-plus is more prec
 double epsilon       -- Default: .001. Recommended: [.0001 to .01]. Smaller -> more precision.
                      Larger -> faster. Remember to set useEpsilon to true if use this parameter.
 boolean useEpsilon   -- Default: true. Recommended unless extremely exact results needed.
-						   value of false could potentially make KMeans much slower.
+                     value of false could potentially make KMeans much slower.
   
 	MISC DATA STRUCTURES: these are calculated from dimension of points[][]
 int m                -- Number of data points. Typically denoted by 'm' in machine-learning.
