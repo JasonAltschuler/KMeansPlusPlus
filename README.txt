@@ -54,11 +54,11 @@ double[][] points = User.provideData();         // you need to provide
 int k = User.provideNumberOfCluster();          // you need to provide
 
 KMeans example = new KMeans.builder(k, points)  // required
-                     .iterations(50)      // optional
-                     .pp(true)            // optional
-                     .epsilon(.001)       // optional
-                     .useEpsilon(true)    // optional
-                     .build();            // required
+                     .iterations(50)            // optional
+                     .pp(true)                  // optional
+                     .epsilon(.001)             // optional
+                     .useEpsilon(true)          // optional
+                     .build();                  // required
 
 double[][] centroids = example.getCentroids();  // centroid of clusters
 int[] assignment     = example.getAssignment(); // which cluster each point belongs to
