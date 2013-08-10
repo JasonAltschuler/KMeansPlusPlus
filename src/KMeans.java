@@ -1,41 +1,42 @@
-/*************************************************************************************
- * @author Altschuler and Wu Lab
+/**************************************************************************
+ * @author Jason Altschuler
  * 
  * @tags machine learning, computer vision, data mining
  * 
  * PURPOSE: Clusters n-dimensional points.
- * METHOD: An improved version of K-Means clustering algorithm.
+ * 
+ * Algorithm: KMeans++. An improved version of K-Means clustering algorithm.
  * 
  * For full documentation, see readme.txt
- *************************************************************************************/
+ *************************************************************************/
+
+// TODO: plot points for visualization
 
 // TODO: check against MATLAB (measure WCSS)
 
-// TODO: Code for stupid cases, i.e. empty clusters -- try / catch and run again. 
+// TODO: try/catch and run again for empty clusters
 
-// TODO: consistency with terms "clustering" and "iteration" (assignment + update step or 'x' number of those)
-// remember WCSS from previous iteration 
+// TODO: consistency with terms "clustering" and "iteration" 
+// (assignment + update step or 'x' number of those)
 
-// TODO: Give user option to tell how much time to take
+// TODO: Give user option to define stopping criteria based on time elapsed
 
 // TODO: Provide other (optional) distance formulas (L1, etc.)
 
-
-import java.io.File;
 import java.io.IOException;
 import java.util.Random;
 
 public class KMeans {
 
-   /*************************************************************************************
+   /***********************************************************************
     * Data structures
-    *************************************************************************************/
+    **********************************************************************/
    // user-defined parameters
    private int k;                // number of centroids
    private double[][] points;    // n-dimensional data points. 
 
    // optional parameters
-   private int iterations;       // number of times to repeat the clustering. Algorithm chooses run with lowest WCSS
+   private int iterations;       // number of times to repeat the clustering. Choose run with lowest WCSS
    private boolean pp;           // true --> KMeans++. false --> basic random sampling
    private double epsilon;       // stops running when improvement in error < epsilon
    private boolean useEpsilon;   // true  --> stop running when marginal improvement in WCSS < epsilon
@@ -48,15 +49,15 @@ public class KMeans {
    // output
    private double[][] centroids; // position vectors of centroids                      dim(2): (k) by (number of channels)
    private int[] assignment;     // assigns each point to nearest centroid [0, k-1]    dim(1): (number of pixels)
-   private double WCSS;          // within-cluster sum-of-squares (measure of fit/error)
+   private double WCSS;          // within-cluster sum-of-squares. Cost function to minimize
 
    
-   /*************************************************************************************
+   /***********************************************************************
     * Constructors
-    *************************************************************************************/
+    **********************************************************************/
    
    /**
-    * Empty constructor is private to ensure that the client has to use the 
+    * Empty constructor is private to ensure that clients have to use the 
     * Builder inner class to create a KMeans object.
     */
    private KMeans() {} 
@@ -78,7 +79,7 @@ public class KMeans {
       m = points.length;
       n = points[0].length;
 
-      // run KMeans clustering algorithm
+      // run KMeans++ clustering algorithm
       run();
    }
 
@@ -86,11 +87,9 @@ public class KMeans {
    /**
     * Builder class for constructing KMeans objects.
     * 
-    * For descriptions of the fields in this (inner) class, see the outer class.
+    * For descriptions of the fields in this (inner) class, see outer class.
     */
    public static class Builder {
-      // TODO: add run time to parameters (user-defined option instead of just iterations and epsilons)
-
       // required
       private final int k;
       private final double[][] points;
@@ -157,9 +156,9 @@ public class KMeans {
    }
 
 
-   /**********************************************************************************
+   /***********************************************************************
     * KMeans clustering algorithm
-    **********************************************************************************/
+    **********************************************************************/
 
    /** 
     * Run KMeans algorithm
@@ -193,23 +192,17 @@ public class KMeans {
     * Perform KMeans clustering algorithm once.
     */
    private void cluster() {
-      // set up for the while loop
+      // continue to re-cluster until marginal gains are small enough
       chooseInitialCentroids();
       WCSS = Double.POSITIVE_INFINITY; 
       double prevWCSS;
+      do {  
+         assignmentStep();   // assign points to the closest centroids
 
-      // improve the clustering until minimal marginal improvement
-      do {
-         // assign points to the closest centroids
-         assignmentStep();
+         updateStep();       // update centroids
 
-         // update centroids
-         updateStep();
-
-         // calculate error to see improvement after this iteration
-         prevWCSS = WCSS;
+         prevWCSS = WCSS;    // check if cost function meets stopping criteria
          calcWCSS();
-
       } while (!stop(prevWCSS));
    }
 
@@ -266,9 +259,9 @@ public class KMeans {
    }
 
 
-   /*****************************************************************************
+   /***********************************************************************
     * Choose initial centroids
-    ****************************************************************************/
+    **********************************************************************/
    /**
     * Uses either plusplus (KMeans++) or a basic randoms sample to choose initial centroids
     */
@@ -363,9 +356,9 @@ public class KMeans {
    }
 
 
-   /***********************************************************************************
-    * Decide when to stop running
-    ***********************************************************************************/    
+   /***********************************************************************
+    * Cutoff to stop clustering
+    **********************************************************************/    
 
    /**
     * Calculates whether to stop the run
@@ -391,9 +384,9 @@ public class KMeans {
       return epsilon > 1 - (WCSS / prevWCSS);
    }
 
-   /***********************************************************************************
+   /***********************************************************************
     * Utility functions
-    ***********************************************************************************/
+    **********************************************************************/
    // TODO: offer other distance functions (maybe in a separate Dist.java class)
    /** 
     * Calculates the squared Euclidean Distance between two points
@@ -426,9 +419,9 @@ public class KMeans {
       this.WCSS = WCSS;
    }
 
-   /************************************************************************************
-    * Getters
-    ************************************************************************************/
+   /***********************************************************************
+    * Accessors
+    ***********************************************************************/
    public int[] getAssignment() {
       return assignment;
    }
@@ -443,41 +436,39 @@ public class KMeans {
 
 
 
-   /************************************************************************************
-    * Main method for unit testing
-    ************************************************************************************/
-   public static void main(String args[]) throws IOException { 
-
+   /***********************************************************************
+    * Unit testing
+    **********************************************************************/
+   
+   public static void main(String args[]) throws IOException {
       // the test data is four 750-point Gaussian clusters (3000 points in all)
       // created around the vertices of the unit square
-      File dataset = new File("." + File.separator + "TestData.csv");
-      double[][] points = CSVreader.read(dataset.getCanonicalPath(), 3000, 2);
+      String data = "TestData.csv";
+      int numPoints = 3000;
+      int dimensions = 2;
       int k = 4;
-
-      final long startTime = System.currentTimeMillis();
-
+      double[][] points = CSVreader.read(data, numPoints, dimensions);
 
       // run K-means
+      final long startTime = System.currentTimeMillis();
       KMeans clustering = new KMeans.Builder(k, points)
-      .iterations(50)
-      .pp(true)
-      .epsilon(.001)
-      .useEpsilon(true)
-      .build();
-
-      // print timing information
+                                    .iterations(50)
+                                    .pp(true)
+                                    .epsilon(.001)
+                                    .useEpsilon(true)
+                                    .build();
       final long endTime = System.currentTimeMillis();
-      final long duration = endTime - startTime;
-      System.out.println("Clustering took " + (double) duration/1000 + " seconds");
+     
+      // print timing information
+      final long elapsed = endTime - startTime;
+      System.out.println("Clustering took " + (double) elapsed/1000 + " seconds");
       System.out.println();
 
       // get output
       double[][] centroids = clustering.getCentroids();
-      double WCSS 		 = clustering.getWCSS();
-      // int[] assignment = kmean.getAssignment();
+      double WCSS 		   = clustering.getWCSS();
+      // int[] assignment  = kmean.getAssignment();
 
-
-      // TODO: Make output format neater
       // print output
       for (int i = 0; i < k; i++)
          System.out.println("(" + centroids[i][0] + ", " + centroids[i][1] + ")");
@@ -485,7 +476,7 @@ public class KMeans {
 
       System.out.println("The within-cluster sum-of-squares (WCSS) = " + WCSS);
       System.out.println();
-
+      
       // write output to CSV
       // CSVwriter.write("filePath", centroids);
    }
