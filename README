@@ -1,0 +1,87 @@
+/**********************************************************************
+* Description of KMeans.java
+**********************************************************************/
+
+  ** PURPOSE: Clusters n-dimensional points.
+
+  ** ALGORITHM: KMeans++, an improvement on the classical K-Means.
+
+  ** COST FUNCTION: minimize Within-Cluster-Sum-of-Squares (WCSS)
+
+WCSS := sum(sum(|C_i - X_j|))
+
+   where C_i is the ith cluster {1 ... k},
+         X_j is the jth point that is assigned to C_i
+
+  ** OVERVIEW:
+     - Step 1: Randomly chooses without replacement k (# of clusters)
+      data points to be initial centroids, either by basic random
+      sampling or by KMeans++ (described below).
+     - Step 2: Cluster multiple times. Clustering consists of two
+      repeating alternating steps.
+       - Step 2a: Assignment step: assign points  to nearest centroids.
+       - Step 2b: Update step: recalculate centroids based on assignments.
+         - Steps 2a and 2b are repeated until the marginal improvement
+         in WCSS (the cost function) is less than 'epsilon' (provided
+         by user, or default = .001).
+     - Step 3: Choose the clustering with the lowest WCSS.
+
+  ** DESCRIPTION OF KMEANS++: An improved method for choosing initial
+    centroids. Iteratively chooses the next centroid based on a
+    weighted distribution, where the probability a data point is chosen
+    is directly proportional to the square of the distance between that
+    point and the nearest already chosen centroid.
+
+  ** PARAMETERS / DATA STRUCTURES: for more description, see the
+    documentation in the code itself.
+Default and suggested values are provided directly below.
+
+  ** REQUIRED PARAMETERS:
+int k                -- number of clusters. Recommended: fewer is better.
+                     See link 3 at bottom for suggestions on choosing k.
+double[][] points    -- n-dimensional points.
+                     For PhenoRipper, this is pixels by channels, and
+                     entries stores pixel intensities.
+
+  ** OPTIONAL PARAMETERS: default and suggested values
+int iterations       -- Default: 50. Recommended [50, 1000]
+boolean pp           -- Default: true. Recommended: true. KMeans++
+                     typically converges faster than basic random sampling.
+double epsilon       -- Default: .001. Recommended: [.0001 to .01].
+                     Smaller -> more precision. Larger -> faster.
+                     Remember to set 'useEpsilon' to true if using this.
+boolean useEpsilon   -- Default: true. Recommended unless extremely exact
+                     results needed. Otherwise, potentially  much slower.
+
+  ** OTHER DATA STRUCTURES: calculated from dimension of points[][]
+int m                -- # of data points. For PhenoRipper: # of pixels.
+int n                -- # of dimensions. For PhenoRipper: # of channels.
+
+  ** OUTPUT:
+double[][] centroids -- coordinates of cluster centroids.
+int[] assignment     -- ith point is assigned to assignment[i] cluster
+double WCSS          -- Within-Cluster-Sum-Of-Squares. Cost function.
+
+  ** EXAMPLE RUN:
+double[][] points = User.provideData();         // you need to provide
+int k = User.provideNumberOfCluster();          // you need to provide
+
+KMeans example = new KMeans.builder(k, points)  // required
+                     .iterations(50)            // optional
+                     .pp(true)                  // optional
+                     .epsilon(.001)             // optional
+                     .useEpsilon(true)          // optional
+                     .build();                  // required
+
+double[][] centroids = example.getCentroids();  // cluster centroids
+int[] assignment     = example.getAssignment(); // cluster assignments
+double WCSS          = example.getWCSS();       // cost function
+
+User.do_something_awesome_with_the_data();      // enjoy!
+
+
+  ** SUGGESTED READINGS:
+   1. http://en.wikipedia.org/wiki/K-means_clustering
+   2. http://home.deib.polimi.it/matteucc/Clustering/tutorial_html/kmeans.html
+   3. http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
+
