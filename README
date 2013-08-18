@@ -1,5 +1,7 @@
 /**********************************************************************
-* Description of KMeans.java
+* @author Jason Altschuler
+*
+* Description of KMeans
 **********************************************************************/
 
   ** PURPOSE: Clusters n-dimensional points.
