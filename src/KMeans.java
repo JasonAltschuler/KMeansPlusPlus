@@ -1,14 +1,4 @@
-/**************************************************************************
- * @author Jason Altschuler
- * 
- * @tags machine learning, computer vision, data mining
- * 
- * PURPOSE: Clusters n-dimensional points.
- * 
- * Algorithm: KMeans++. An improved version of K-Means clustering algorithm.
- * 
- * For full documentation, see readme.txt
- *************************************************************************/
+
 
 // TODO: plot points for visualization
 
@@ -23,6 +13,7 @@
 
 // TODO: Provide other (optional) distance formulas (L1, etc.)
 
+import java.awt.geom.Point2D;
 import java.io.IOException;
 import java.util.Random;
 
@@ -209,9 +200,6 @@ public class KMeans {
 
    /** 
     * Assigns to each data point the nearest centroid.
-    * 
-    * TODO: is the following line true?
-    * Also used in identification of pixel, block, and superblock types (after running k-means).
     */
    private void assignmentStep() {
       assignment = new int[m];
@@ -479,6 +467,13 @@ public class KMeans {
       
       // write output to CSV
       // CSVwriter.write("filePath", centroids);
+      
+      // plot results
+      Point2D.Double[] points2D = new Point2D.Double[numPoints];
+      for (int i = 0; i < numPoints; i++) 
+         points2D[i] = new Point2D.Double(points[i][0], points[i][1]);
+      // TODO: also add option to plot new centroids in bright red
+      Grapher.graph(points2D, "KMeans++ by Jason Altschuler");
    }
 
 }
