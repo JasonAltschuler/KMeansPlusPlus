@@ -1,4 +1,14 @@
-
+/**************************************************************************
+ * @author Jason Altschuler
+ * 
+ * @tags machine learning, computer vision, data mining
+ * 
+ * PURPOSE: Clusters n-dimensional points.
+ * 
+ * Algorithm: KMeans++. An improved version of K-Means clustering algorithm.
+ * 
+ * For full documentation, see readme.txt
+ *************************************************************************/
 
 // TODO: plot points for visualization
 
