@@ -82,7 +82,7 @@ double WCSS          = example.getWCSS();       // cost function
 User.do_something_awesome_with_the_data();      // enjoy!
 
 
-  ** SUGGESTED READINGS:
+  ** SOURCES:
    1. http://en.wikipedia.org/wiki/K-means_clustering
    2. http://home.deib.polimi.it/matteucc/Clustering/tutorial_html/kmeans.html
    3. http://en.wikipedia.org/wiki/Determining_the_number_of_clusters_in_a_data_set
