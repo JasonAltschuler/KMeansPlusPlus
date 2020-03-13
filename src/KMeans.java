@@ -431,7 +431,7 @@ public class KMeans {
     */
    private boolean stop(double prevWCSS) {
       if (useEpsilon)
-         return epsilonTest(prevWCSS);
+         return prevWCSS == WCSS || epsilonTest(prevWCSS);
       else
          return prevWCSS == WCSS; // TODO: make comment (more exact, but could be much slower)
       // could this take infinite amount of time? double compare...
